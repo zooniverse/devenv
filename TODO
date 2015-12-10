@@ -1,0 +1,3 @@
+* Write persistent db stuff to tmp/xyz
+* Mac vs Linux: something with ips
+* Move other apps (panoptes) to use external_links:...

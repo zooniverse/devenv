@@ -1,0 +1,34 @@
+zookeeper:
+  image: zooniverse/zookeeper
+  command: /usr/share/zookeeper/bin/zkServer.sh start-foreground -c localhost:2888:3888 -i 1
+  ports:
+    - "2181:2181"
+
+redis:
+  image: redis
+  command: redis-server --appendonly yes
+  ports:
+    - "6379:6379"
+
+kafka:
+  image: zooniverse/kafka
+  links:
+    - zookeeper:zk
+  hostname: kafka
+  command: -i 1 -H kafka -p 9092 -z zk:2181
+  ports:
+    - "9092:9092"
+
+elasticsearch:
+  image: elasticsearch:2.0
+  command: elasticsearch -Des.network.bind_host=0.0.0.0
+  ports:
+    - "9200:9200"
+    - "9300:9300"
+
+kibana:
+  image: kibana:4.2
+  ports:
+    - "5601:5601"
+  links:
+    - elasticsearch:elasticsearch
