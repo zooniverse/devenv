@@ -1,3 +1,20 @@
+postgres:
+  image: postgres
+  environment:
+    - "POSTGRES_USER=zoo"
+    - "POSTGRES_PASSWORD=zoo"
+  ports:
+    - "5432:5432"
+  volumes:
+    - ./tmp/postgres:/var/lib/postgresql
+
+mongo:
+  image: mongo:2.4
+  ports:
+    - "27017:27017"
+  volumes:
+    - ./tmp/mongodb:/data
+
 zookeeper:
   image: zooniverse/zookeeper
   command: /usr/share/zookeeper/bin/zkServer.sh start-foreground -c localhost:2888:3888 -i 1
@@ -21,10 +38,12 @@ kafka:
 
 elasticsearch:
   image: elasticsearch:2.0
-  command: elasticsearch -Des.network.bind_host=0.0.0.0
+  command: "/bin/bash -c 'usermod -u 1000 elasticsearch && gosu elasticsearch elasticsearch -Des.network.bind_host=0.0.0.0'"
   ports:
     - "9200:9200"
     - "9300:9300"
+  volumes:
+    - ./tmp/elasticsearch:/usr/share/elasticsearch/data
 
 kibana:
   image: kibana:4.2
